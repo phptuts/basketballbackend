@@ -1,5 +1,6 @@
 const { ValidationError } = require("yup");
 const { registerValidator } = require("../validators/user.validators");
+const formErrorsResponse = require("../responses/formerrors.response");
 
 const register = async (request, response) => {
   try {
@@ -8,7 +9,7 @@ const register = async (request, response) => {
     response.json(request.body);
   } catch (e) {
     if (e instanceof ValidationError) {
-      response.status(400).send("bad request");
+      response.status(400).json(formErrorsResponse(e));
       return;
     }
     throw e;

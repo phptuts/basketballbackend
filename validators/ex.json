@@ -1,0 +1,9 @@
+{
+  "meta": {
+    "type": "form_errors"
+  },
+  "errors": {
+    "email": ["invalid email"],
+    "password": ["too long"]
+  }
+}
