@@ -1,13 +1,41 @@
 const { ValidationError } = require("yup");
 const { loginValidator } = require("../validators/user.validators");
 const formErrorsResponse = require("../responses/formerrors.response");
+const { UserModel } = require("../database/init");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const fs = require("fs");
+const path = require("path");
+const createResponse = require("../responses/response");
 
 const login = async (request, response) => {
   try {
-    const logindata = await loginValidator.validate(request.body, {
+    const { email, password } = await loginValidator.validate(request.body, {
       abortEarly: false,
     });
-    response.status(401).json(logindata);
+
+    const user = await UserModel.findOne({ where: { email } });
+
+    if (!user) {
+      response.status(401).send("");
+      return;
+    }
+
+    const encryptedPassword = user.password;
+    const isValid = await bcrypt.compare(password, encryptedPassword);
+
+    if (!isValid) {
+      response.status(401).send("");
+      return;
+    }
+    var privateKeyPath = path.join(__dirname, "..", "private.key");
+    var privateKey = fs.readFileSync(privateKeyPath);
+    var token = jwt.sign({ userId: user.id }, privateKey, {
+      algorithm: "RS256",
+      expiresIn: "4h",
+    });
+
+    response.json(createResponse("jwt_token", "login", { token }));
   } catch (e) {
     if (e instanceof ValidationError) {
       response.status(400).json(formErrorsResponse(e));
