@@ -14,4 +14,9 @@ const registerValidator = yup.object({
   password: yup.string().required().min(6).max(30),
 });
 
-module.exports = { registerValidator };
+const loginValidator = yup.object({
+  email: yup.string().required(),
+  password: yup.string().required(),
+});
+
+module.exports = { registerValidator, loginValidator };
