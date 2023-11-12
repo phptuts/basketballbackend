@@ -9,7 +9,12 @@ const addGame = async (request, response) => {
     const validData = await addGameValidator.validate(request.body, {
       abortEarly: false,
     });
-    const newGameObj = { ...validData, isOver: false, isLive: false };
+    const newGameObj = {
+      ...validData,
+      isOver: false,
+      isLive: false,
+      userId: request.user.id,
+    };
     const game = await GameModel.create(newGameObj);
     response.json(createResponse("game", "create", game.toJSON()));
   } catch (e) {
