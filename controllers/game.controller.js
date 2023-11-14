@@ -4,6 +4,17 @@ const createResponse = require("../responses/response");
 const { addGameValidator } = require("../validators/game.validators");
 const { GameModel } = require("../database/init");
 
+const getGame = async (reqeust, response) => {
+  const game = await GameModel.findByPk(reqeust.params.id);
+
+  if (!game) {
+    response.status(404).send("");
+    return;
+  }
+
+  response.json(createResponse("game", "get", game.toJSON()));
+};
+
 const addGame = async (request, response) => {
   try {
     const validData = await addGameValidator.validate(request.body, {
@@ -26,4 +37,4 @@ const addGame = async (request, response) => {
   }
 };
 
-module.exports = { addGame };
+module.exports = { addGame, getGame };
