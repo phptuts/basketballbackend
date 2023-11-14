@@ -35,7 +35,13 @@ const login = async (request, response) => {
       expiresIn: "4h",
     });
 
-    response.json(createResponse("jwt_token", "login", { token }));
+    response.json(
+      createResponse("jwt_token", "login", {
+        token,
+        userId: user.id,
+        email: user.email,
+      })
+    );
   } catch (e) {
     if (e instanceof ValidationError) {
       response.status(400).json(formErrorsResponse(e));
