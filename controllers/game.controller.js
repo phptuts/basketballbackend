@@ -1,7 +1,10 @@
 const { ValidationError } = require("yup");
 const formErrorsResponse = require("../responses/formerrors.response");
 const createResponse = require("../responses/response");
-const { addGameValidator } = require("../validators/game.validators");
+const {
+  addGameValidator,
+  updateScoreValidator,
+} = require("../validators/game.validators");
 const { GameModel } = require("../database/init");
 
 const getGame = async (reqeust, response) => {
@@ -37,4 +40,33 @@ const addGame = async (request, response) => {
   }
 };
 
-module.exports = { addGame, getGame };
+const updateScore = async (request, response) => {
+  try {
+    const game = await GameModel.findByPk(request.params.id);
+
+    if (!game) {
+      response.status(404).send("");
+      return;
+    }
+
+    if (+game.userId !== +request.user.id) {
+      response.status(403).send("");
+      return;
+    }
+
+    const validData = await updateScoreValidator.validate(request.body, {
+      abortEarly: false,
+    });
+
+    await game.update(validData);
+    response.json(createResponse("game", "update_score", game.toJSON()));
+  } catch (e) {
+    if (e instanceof ValidationError) {
+      response.status(400).json(formErrorsResponse(e));
+      return;
+    }
+    throw e;
+  }
+};
+
+module.exports = { addGame, getGame, updateScore };

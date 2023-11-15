@@ -1,9 +1,14 @@
-const { addGame, getGame } = require("../controllers/game.controller");
+const {
+  addGame,
+  getGame,
+  updateScore,
+} = require("../controllers/game.controller");
 const authorizationMiddleware = require("../middlewares/authorization.middleware");
 
 const router = require("express").Router();
 
 router.get("/:id", getGame);
 router.post("/", authorizationMiddleware, addGame);
+router.put("/:id/updatescore", authorizationMiddleware, updateScore);
 
 module.exports = router;

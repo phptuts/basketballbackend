@@ -6,4 +6,12 @@ const addGameValidator = yup.object({
   gametime: yup.string().required().min(5).max(50),
 });
 
-module.exports = { addGameValidator };
+const updateScoreValidator = yup.object({
+  awayteamScore: yup.number().required().min(0).max(200),
+  hometeamScore: yup.number().required().min(0).max(200),
+  quarter: yup.number().required().min(1).max(4),
+  minutes: yup.number().required().min(0).max(15),
+  seconds: yup.number().required().min(0).max(60),
+});
+
+module.exports = { addGameValidator, updateScoreValidator };
