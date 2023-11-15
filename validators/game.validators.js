@@ -7,11 +7,21 @@ const addGameValidator = yup.object({
 });
 
 const updateScoreValidator = yup.object({
-  awayteamScore: yup.number().required().min(0).max(200),
-  hometeamScore: yup.number().required().min(0).max(200),
-  quarter: yup.number().required().min(1).max(4),
-  minutes: yup.number().required().min(0).max(15),
-  seconds: yup.number().required().min(0).max(60),
+  awayteamScore: yup
+    .number()
+    .typeError("Invalid Number")
+    .required()
+    .min(0)
+    .max(200),
+  hometeamScore: yup
+    .number()
+    .typeError("Invalid Number")
+    .required()
+    .min(0)
+    .max(200),
+  quarter: yup.number().typeError("Invalid Number").required().min(1).max(4),
+  minutes: yup.number().typeError("Invalid Number").required().min(0).max(15),
+  seconds: yup.number().typeError("Invalid Number").required().min(0).max(60),
 });
 
 module.exports = { addGameValidator, updateScoreValidator };
