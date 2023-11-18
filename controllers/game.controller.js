@@ -41,14 +41,46 @@ const addGame = async (request, response) => {
 };
 
 const updateGame = async (request, response) => {
-  await update(request, response, addGameValidator, "update_game");
+  await update(
+    request,
+    response,
+    "update_game",
+    request.body,
+    addGameValidator
+  );
 };
 
 const updateScore = async (request, response) => {
-  await update(request, response, updateScoreValidator, "update_score");
+  await update(
+    request,
+    response,
+    "update_score",
+    request.body,
+    updateScoreValidator
+  );
 };
 
-const update = async (request, response, validator, actionType) => {
+const updateStart = async (request, response) => {
+  await update(request, response, "start_game", {
+    isOver: false,
+    isLive: true,
+  });
+};
+
+const updateEnd = async (request, response) => {
+  await update(request, response, "end_game", {
+    isOver: true,
+    isLive: false,
+  });
+};
+
+const update = async (
+  request,
+  response,
+  actionType,
+  data,
+  validator = null
+) => {
   try {
     const game = await GameModel.findByPk(request.params.id);
 
@@ -61,10 +93,15 @@ const update = async (request, response, validator, actionType) => {
       response.status(403).send("");
       return;
     }
+    let validData;
 
-    const validData = await validator.validate(request.body, {
-      abortEarly: false,
-    });
+    if (validator != null) {
+      validData = await validator.validate(data, {
+        abortEarly: false,
+      });
+    } else {
+      validData = data;
+    }
 
     await game.update(validData);
     response.json(createResponse("game", actionType, game.toJSON()));
@@ -77,4 +114,11 @@ const update = async (request, response, validator, actionType) => {
   }
 };
 
-module.exports = { addGame, getGame, updateScore, updateGame };
+module.exports = {
+  addGame,
+  getGame,
+  updateScore,
+  updateGame,
+  updateEnd,
+  updateStart,
+};
