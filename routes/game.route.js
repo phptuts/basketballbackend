@@ -5,12 +5,14 @@ const {
   updateGame,
   updateStart,
   updateEnd,
+  getGames,
 } = require("../controllers/game.controller");
 const authorizationMiddleware = require("../middlewares/authorization.middleware");
 
 const router = require("express").Router();
 
 router.get("/:id", getGame);
+router.get("/", getGames);
 router.post("/", authorizationMiddleware, addGame);
 router.put("/:id/updatescore", authorizationMiddleware, updateScore);
 router.put("/:id", authorizationMiddleware, updateGame);

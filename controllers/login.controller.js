@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
 const path = require("path");
-const createResponse = require("../responses/response");
+const { createResponse } = require("../responses/response");
 
 const login = async (request, response) => {
   try {

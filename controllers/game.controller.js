@@ -1,11 +1,37 @@
 const { ValidationError } = require("yup");
 const formErrorsResponse = require("../responses/formerrors.response");
-const createResponse = require("../responses/response");
+const {
+  createResponse,
+  createPaginateResponse,
+} = require("../responses/response");
 const {
   addGameValidator,
   updateScoreValidator,
 } = require("../validators/game.validators");
 const { GameModel } = require("../database/init");
+
+const getGames = async (request, response) => {
+  const pageSize = 10;
+  let page = 1;
+  if (request.query["page"]) {
+    page = +request.query["page"];
+  }
+  if (page <= 0) {
+    page = 1;
+  }
+  let where = {};
+  if (request.query["user_id"]) {
+    where["userId"] = +request.query["user_id"];
+  }
+
+  const { count, rows } = await GameModel.findAndCountAll({
+    where,
+    offset: (page - 1) * pageSize,
+    limit: pageSize,
+  });
+
+  response.json(createPaginateResponse("game", page, pageSize, count, rows));
+};
 
 const getGame = async (reqeust, response) => {
   const game = await GameModel.findByPk(reqeust.params.id);
@@ -121,4 +147,5 @@ module.exports = {
   updateGame,
   updateEnd,
   updateStart,
+  getGames,
 };
