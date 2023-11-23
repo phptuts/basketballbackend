@@ -11,7 +11,7 @@ const {
 const { GameModel } = require("../database/init");
 
 const getGames = async (request, response) => {
-  const pageSize = 10;
+  const pageSize = 2;
   let page = 1;
   if (request.query["page"]) {
     page = +request.query["page"];
