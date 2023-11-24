@@ -3,7 +3,13 @@ const yup = require("yup");
 const addGameValidator = yup.object({
   hometeam: yup.string().required().min(5).max(20),
   awayteam: yup.string().required().min(5).max(20),
-  gametime: yup.string().required().min(5).max(50),
+  gametime: yup
+    .number()
+    .typeError("Invalid Timestamp")
+    .required()
+    .test("future_timestamp", "Timestamp must be in the future", (value) => {
+      return Date.now() < +value;
+    }),
 });
 
 const updateScoreValidator = yup.object({
