@@ -16,7 +16,7 @@ function createGameModel(sequelize) {
       allowNull: false,
     },
     gametime: {
-      type: DataTypes.STRING,
+      type: DataTypes.DATE,
       allowNull: false,
     },
     isLive: {
