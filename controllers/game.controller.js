@@ -9,6 +9,7 @@ const {
   updateScoreValidator,
 } = require("../validators/game.validators");
 const { GameModel } = require("../database/init");
+const { Op } = require("sequelize");
 
 const getGames = async (request, response) => {
   const pageSize = 3;
@@ -20,8 +21,18 @@ const getGames = async (request, response) => {
     page = 1;
   }
   let where = {};
-  if (request.query["user_id"]) {
+  if (+request.query["user_id"] > 0) {
     where["userId"] = +request.query["user_id"];
+  }
+
+  if (request.query["search"]) {
+    const searchQuery = {
+      [Op.iLike]: `%${request.query["search"]}%`,
+    };
+    where[Op.or] = {
+      hometeam: searchQuery,
+      awayteam: searchQuery,
+    };
   }
 
   if (request.query["type"]) {
