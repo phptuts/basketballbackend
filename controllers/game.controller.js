@@ -11,7 +11,7 @@ const {
 const { GameModel } = require("../database/init");
 
 const getGames = async (request, response) => {
-  const pageSize = 2;
+  const pageSize = 3;
   let page = 1;
   if (request.query["page"]) {
     page = +request.query["page"];
@@ -22,6 +22,25 @@ const getGames = async (request, response) => {
   let where = {};
   if (request.query["user_id"]) {
     where["userId"] = +request.query["user_id"];
+  }
+
+  if (request.query["type"]) {
+    switch (request.query["type"]) {
+      case "live":
+        where["isLive"] = true;
+        where["isOver"] = false;
+        break;
+      case "over":
+        where["isLive"] = false;
+        where["isOver"] = true;
+        break;
+      case "not_started":
+        where["isLive"] = false;
+        where["isOver"] = false;
+        break;
+      default:
+        break;
+    }
   }
 
   const { count, rows } = await GameModel.findAndCountAll({
