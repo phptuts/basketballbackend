@@ -13,10 +13,11 @@ const webSocketServer = new WebSocket.Server({ server });
 var cors = require("cors");
 const authenticationMiddleware = require("./middlewares/authentication.middleware");
 webSocketServer.on("connection", (ws) => {
-  console.log("connected");
-  ws.on("message", (message, isBinary) => {
-    console.log(message, message.toString(), isBinary, "message");
-  });
+  console.log("connected websocket");
+});
+app.use((req, res, next) => {
+  req.webSocketServer = webSocketServer;
+  next();
 });
 app.use(cors());
 app.use(express.json());
@@ -25,11 +26,6 @@ app.use("/users", userRoutes);
 app.use("/login", loginRoutes);
 app.use("/game", gameRoutes);
 app.get("/", (req, res) => {
-  webSocketServer.clients.forEach((c) => {
-    if (c.readyState == WebSocket.OPEN) {
-      c.send(Math.random());
-    }
-  });
   res.send("basketball backend");
 });
 

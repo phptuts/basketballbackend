@@ -1,5 +1,7 @@
 const { ValidationError } = require("yup");
 const formErrorsResponse = require("../responses/formerrors.response");
+const WebSocket = require("ws");
+
 const {
   createResponse,
   createPaginateResponse,
@@ -160,6 +162,11 @@ const update = async (
     }
 
     await game.update(validData);
+    request.webSocketServer.clients.forEach((client) => {
+      if (client.readyState == WebSocket.OPEN) {
+        client.send(JSON.stringify(game.toJSON()));
+      }
+    });
     response.json(createResponse("game", actionType, game.toJSON()));
   } catch (e) {
     if (e instanceof ValidationError) {
