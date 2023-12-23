@@ -12,6 +12,7 @@ const { sequelize } = require("./database/init");
 const webSocketServer = new WebSocket.Server({ server });
 var cors = require("cors");
 const authenticationMiddleware = require("./middlewares/authentication.middleware");
+const { middlewareWrapperAsync } = require("./helpers/asyncwrapper");
 webSocketServer.on("connection", (ws) => {
   console.log("connected websocket");
 });
@@ -21,12 +22,17 @@ app.use((req, res, next) => {
 });
 app.use(cors());
 app.use(express.json());
-app.use(authenticationMiddleware);
+app.use(middlewareWrapperAsync(authenticationMiddleware));
 app.use("/users", userRoutes);
 app.use("/login", loginRoutes);
 app.use("/game", gameRoutes);
 app.get("/", (req, res) => {
   res.send("basketball backend");
+});
+
+app.use((error, request, response, next) => {
+  console.log(error);
+  response.status(500).json({ message: "error" });
 });
 
 server.listen(3000, async () => {
