@@ -13,6 +13,7 @@ const webSocketServer = new WebSocket.Server({ server });
 var cors = require("cors");
 const authenticationMiddleware = require("./middlewares/authentication.middleware");
 const { middlewareWrapperAsync } = require("./helpers/asyncwrapper");
+const errorMiddleware = require("./middlewares/error.middleware");
 webSocketServer.on("connection", (ws) => {
   console.log("connected websocket");
 });
@@ -27,13 +28,11 @@ app.use("/users", userRoutes);
 app.use("/login", loginRoutes);
 app.use("/game", gameRoutes);
 app.get("/", (req, res) => {
+  throw new Error("hi");
   res.send("basketball backend");
 });
 
-app.use((error, request, response, next) => {
-  console.log(error);
-  response.status(500).json({ message: "error" });
-});
+app.use(errorMiddleware);
 
 server.listen(3000, async () => {
   try {

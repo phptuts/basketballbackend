@@ -8,6 +8,15 @@ function createResponse(type, action, data) {
   };
 }
 
+function errorResponse(id) {
+  return {
+    meta: {
+      type: "error",
+    },
+    data: id,
+  };
+}
+
 function createPaginateResponse(type, page, pageSize, rowCount, items) {
   const numberOfPages = Math.ceil(rowCount / pageSize);
 
@@ -25,4 +34,4 @@ function createPaginateResponse(type, page, pageSize, rowCount, items) {
   };
 }
 
-module.exports = { createResponse, createPaginateResponse };
+module.exports = { createResponse, createPaginateResponse, errorResponse };
