@@ -28,7 +28,6 @@ app.use("/users", userRoutes);
 app.use("/login", loginRoutes);
 app.use("/game", gameRoutes);
 app.get("/", (req, res) => {
-  throw new Error("hi");
   res.send("basketball backend");
 });
 
