@@ -28,9 +28,8 @@ const login = async (request, response) => {
       response.status(401).send("");
       return;
     }
-    var privateKeyPath = path.join(__dirname, "..", "private.key");
-    var privateKey = fs.readFileSync(privateKeyPath);
-    var token = jwt.sign({ userId: user.id }, privateKey, {
+    const privateKey = atob(process.env.PRIVATE_JWT_KEY);
+    const token = jwt.sign({ userId: user.id }, privateKey, {
       algorithm: "RS256",
       expiresIn: "4h",
     });

@@ -17,8 +17,7 @@ const authenticationMiddleware = async (request, response, next) => {
   }
   try {
     authToken = authToken.replace("Bearer ", "");
-    const privateKeyPath = path.join(__dirname, "..", "private.key");
-    const privateKey = fs.readFileSync(privateKeyPath);
+    const privateKey = atob(process.env.PRIVATE_JWT_KEY);
     const { userId } = jwt.verify(authToken, privateKey, {
       algorithm: "RS256",
     });
